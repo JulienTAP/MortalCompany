@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 4.0.0)
-cmake_policy(VERSION 4.0.0)
+cmake_minimum_required(VERSION 3.31.6)
+cmake_policy(VERSION 3.31.6)
 
 
 file(READ "glm/detail/setup.hpp" GLM_SETUP_FILE)
