@@ -5,6 +5,14 @@
 #include "glm/matrix.hpp"
 #include "shaderClass.h"
 #include "physics/AABB.h" // Include the AABB header
+#include "camera.h"       // For Camera class
+// #include "light.h"     // Assuming LightProperties is defined (e.g. in light.h)
+// For now, let's assume LightProperties is available or we pass params directly.
+// For simplicity in this step, we'll pass light params directly to avoid creating a new file now.
+// If you create light.h with LightProperties, include it and use const LightProperties& light.
+
+// Forward declare LightProperties if not including a header for it yet
+struct LightProperties; // Add this if light.h is not created yet for this step
 
 class Drawable {
 public:
@@ -13,29 +21,30 @@ public:
     /**
      * @brief Draws the drawable object.
      * @param shader The shader program to use for drawing.
-     * @param cameraMatrix The view-projection matrix from the camera.
+     * @param camera The camera providing view, projection, and position.
+     * @param light The light properties for illumination.
      * @param parentWorldMatrix The world transformation matrix of the parent object.
      */
-    virtual void draw(Shader& shader, const glm::mat4& cameraMatrix, const glm::mat4& parentWorldMatrix) = 0;
+    virtual void draw(Shader& shader, Camera& camera, const LightProperties& light, const glm::mat4& parentWorldMatrix) = 0;
 
     /**
      * @brief Translates the drawable object.
      * @param translation The translation vector.
      */
-    void translate(const glm::vec3& translation); // Added const&
+    void translate(const glm::vec3& translation);
 
     /**
      * @brief Rotates the drawable object.
      * @param degrees The rotation angle in degrees.
      * @param axis The axis of rotation.
      */
-    void rotate(float degrees, const glm::vec3& axis); // Added const&
+    void rotate(float degrees, const glm::vec3& axis);
 
     /**
      * @brief Scales the drawable object.
      * @param scaleVec The scaling vector.
      */
-    void scale(const glm::vec3& scaleVec); // Added const&
+    void scale(const glm::vec3& scaleVec);
 
     /**
      * @brief Gets the local model matrix of the drawable.
@@ -55,11 +64,6 @@ public:
      * @return The AABB in world space.
      */
     [[nodiscard]] virtual Physics::AABB getWorldAABB(const glm::mat4& parentWorldMatrix) const {
-        // Default implementation for objects that might not have their own vertices (like object3D root)
-        // Derived classes with actual geometry (like TrianglesObject) should override this
-        // or ensure localAABB is meaningful.
-        // For a simple Drawable that isn't an object3D container, this transform is correct.
-        // For an object3D container, it should combine children's AABBs.
         glm::mat4 worldMatrix = parentWorldMatrix * localModelMatrix;
         return localAABB.transform(worldMatrix);
     }
@@ -74,7 +78,7 @@ public:
      * @brief Sets whether this object is collidable.
      * @param isCollidable True if the object should be considered for collisions.
      */
-    void setCollidable(bool isCollidable) { collidable = isCollidable; }
+    void setCollidable(bool isCollidableParam) { collidable = isCollidableParam; }
 
     /**
      * @brief Checks if this object is collidable.
@@ -84,7 +88,7 @@ public:
 
 
     explicit Drawable(glm::mat4 modelMatrix = glm::mat4(1.0f))
-        : localModelMatrix(modelMatrix), localAABB(), collidable(false) {} // Initialize localAABB and collidable
+        : localModelMatrix(modelMatrix), localAABB(), collidable(true) {} // Initialize localAABB, default collidable to true
 
 protected:
     glm::mat4 localModelMatrix;

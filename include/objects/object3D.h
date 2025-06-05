@@ -1,7 +1,7 @@
 #ifndef INC_3DOBJECT_H
 #define INC_3DOBJECT_H
 
-#include "buffers/vao_buffer.hpp"
+#include "buffers/vao_buffer.hpp" // Though not directly used by object3D itself, often included in a chain
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include <vector>
@@ -10,16 +10,19 @@
 #include "drawable.h"
 #include "shaderClass.h"
 #include "physics/AABB.h" // Make sure AABB is included
+#include "camera.h"       // For Camera class
+#include "light.h"     // Assuming LightProperties is defined
 
 class object3D : public Drawable {
 public:
     /**
      * @brief Draws the object and its children.
      * @param shader The shader program to use for drawing.
-     * @param cameraMatrix The view-projection matrix from the camera.
+     * @param camera The camera providing view, projection, and position.
+     * @param light The light properties for illumination.
      * @param parentWorldMatrix The world transformation matrix of this object's parent.
      */
-    void draw(Shader& shader, const glm::mat4& cameraMatrix, const glm::mat4& parentWorldMatrix) override;
+    void draw(Shader& shader, Camera& camera, const LightProperties& light, const glm::mat4& parentWorldMatrix) override;
 
     /**
      * @brief Adds a drawable child object.
@@ -59,9 +62,6 @@ public:
     [[nodiscard]] Physics::AABB getWorldAABB(const glm::mat4& parentWorldMatrix) const override;
 
 
-    // Constructor: Initializes Drawable base, which sets up localModelMatrix to identity.
-    // localAABB for an object3D container itself is typically default (empty/invalid)
-    // unless it also has its own direct geometry (not common for a pure container).
     object3D() : Drawable(glm::mat4(1.0f)) {}
 
 private:

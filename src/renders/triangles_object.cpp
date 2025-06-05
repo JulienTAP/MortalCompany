@@ -1,62 +1,93 @@
 #include "renders/triangles_object.h"
 #include "shaderClass.h"
 #include "buffers/vao_buffer.hpp"
-#include "buffers/general_buffer.hpp" // Included for potential EBO size check logic
+#include "buffers/general_buffer.hpp"
+#include "camera.h"      // For Camera class
+// #include "light.h"    // Assuming LightProperties is defined
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream> // For potential warnings/errors
+#include <iostream>
+#include <string> // Required for std::string, std::to_string
 
-// Constructor is now fully defined in the header (TrianglesObject.h)
-// due to the template-like nature of std::unique_ptr and direct AABB calculation.
+// If LightProperties is in its own header:
+// #include "light.h"
+// If not, ensure its definition is visible here.
+struct LightProperties; // Make sure this matches the definition used in the header
 
-void TrianglesObject::draw(Shader& shader, const glm::mat4& cameraMatrix, const glm::mat4& parentWorldMatrix) {
+
+void TrianglesObject::draw(Shader& shader, Camera& camera, const LightProperties& light, const glm::mat4& parentWorldMatrix) {
     if (!m_vao) {
         throw std::runtime_error("TrianglesObject::draw called with null VAOBuffer");
     }
-    // It's okay if m_numIndices is 0, just means nothing visible will be drawn.
-    // The check for m_numIndices == 0 and returning might be desired if it's an error state,
-    // but for an empty object it's valid.
 
-    // Calculate the final world matrix for this object
     glm::mat4 currentObjectWorldMatrix = parentWorldMatrix * this->localModelMatrix;
 
-    // Activate the shader program
     shader.Activate();
 
-    // Set the model matrix uniform
+    // Set model matrix
     GLint modelLoc = glGetUniformLocation(shader.ID, "model");
     if (modelLoc != -1) {
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(currentObjectWorldMatrix));
-    } else {
-        // Optional: std::cerr << "Warning: Uniform 'model' not found in shader." << std::endl;
     }
 
-    // Set the camera (view-projection) matrix uniform
-    GLint camMatrixLoc = glGetUniformLocation(shader.ID, "camMatrix");
-    if (camMatrixLoc != -1) {
-        glUniformMatrix4fv(camMatrixLoc, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
-    } else {
-        // Optional: std::cerr << "Warning: Uniform 'camMatrix' not found in shader." << std::endl;
+    // Set camera view-projection matrix and camera position
+    camera.Matrix(shader, "camMatrix"); // Exports combined view-projection matrix
+    glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+
+    // Set light uniforms
+    glUniform3fv(glGetUniformLocation(shader.ID, "lightPos"), 1, glm::value_ptr(light.position));
+    glUniform4fv(glGetUniformLocation(shader.ID, "lightColor"), 1, glm::value_ptr(light.color));
+
+    // Bind textures
+    unsigned int numDiffuse = 0;
+    unsigned int numSpecular = 0;
+    // Note: The current Texture class takes GLuint slot in constructor.
+    // Mesh::Draw dynamically assigns units with i.
+    // We should ensure textures are loaded to distinct slots or manage units carefully.
+    // For simplicity, matching Mesh::Draw's dynamic unit assignment based on texture type and count:
+    for (unsigned int i = 0; i < m_textures.size(); i++) {
+        std::string tex_num_str;
+        std::string type = m_textures[i].type; // type is const char*
+
+        if (type == "diffuse") {
+            tex_num_str = std::to_string(numDiffuse++);
+        } else if (type == "specular") {
+            tex_num_str = std::to_string(numSpecular++);
+        }
+        // Assumes shader expects uniforms like "diffuse0", "specular0", etc.
+        // The Texture::texUnit method sets the uniform sampler to the texture unit `i`.
+        // The Texture constructor already binds to GL_TEXTURE0 + slot, where slot is passed to constructor.
+        // If textures are always loaded to unit 0, 1, etc. sequentially, then m_textures[i].unit could be i.
+        // The Mesh::Draw uses 'i' as the unit for the shader. Texture::texUnit uses its `unit` argument.
+
+        // The current Texture class stores `unit` which is set during construction based on `slot`.
+        // `textures[i].texUnit` activates the shader and sets the uniform.
+        // It also uses the `unit` passed to it, not necessarily `textures[i].unit`.
+        // Let's use `i` as the texture unit index for the shader uniform, consistent with Mesh::Draw
+        m_textures[i].texUnit(shader, (type + tex_num_str).c_str(), i); // Use 'i' as the texture unit
+        glActiveTexture(GL_TEXTURE0 + i); // Activate texture unit `i`
+        m_textures[i].Bind();             // Bind the texture
     }
 
-    // Bind the VAO
+
     m_vao->quickBind();
 
-    // Activate necessary vertex attributes (if not persistently enabled in VAO setup)
-    // Assuming VAO setup correctly enables attributes.
-    // If not, you might need:
-    // m_vao->activateSlot(VAOSlot::kPositions);
-    // ... and other used slots
-
-    if (m_numIndices > 0) { // Only draw if there are indices
-        // The type of indices (GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, etc.)
-        // should ideally be known or queried from the EBO.
-        // For now, assuming GL_UNSIGNED_INT as it's common.
-        GLenum indexType = GL_UNSIGNED_INT;
-        // One could potentially store this or deduce it from the EBO's GeneralBuffer's mapping if complex.
-        // For example: if (auto ebo = m_vao->getBufferAt(VAOSlot::kIndices).lock()) { indexType = ebo->getDataMapAt(0).type; }
-
+    if (m_numIndices > 0) {
+        GLenum indexType = GL_UNSIGNED_INT; // Assuming GLuint indices
+        // Query EBO for actual index type if necessary and available from VAOBuffer/GeneralBuffer
+        auto ebo_weak_ptr = m_vao->getBufferAt(VAOSlot::kIndices);
+        if (auto ebo_shared_ptr = ebo_weak_ptr.lock()) {
+             const MappedDataBuffer& ebo_map = ebo_shared_ptr->getDataMapAt(0); // Assuming EBO map is at index 0
+             if(ebo_map.type == GL_UNSIGNED_SHORT) indexType = GL_UNSIGNED_SHORT;
+             else if(ebo_map.type == GL_UNSIGNED_BYTE) indexType = GL_UNSIGNED_BYTE;
+             // else defaults to GL_UNSIGNED_INT
+        }
         glDrawElements(GL_TRIANGLES, m_numIndices, indexType, nullptr);
     }
 
-    VAOBuffer::unbind();
+    VAOBuffer::unbind(); // Unbind VAO
+    // Unbind textures (optional, good practice if other objects might not set all units)
+    for (unsigned int i = 0; i < m_textures.size(); i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 }
