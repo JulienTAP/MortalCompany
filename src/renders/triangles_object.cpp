@@ -1,30 +1,33 @@
 #include "renders/triangles_object.h"
-#include "shaderClass.h" // For Shader class
-#include "buffers/vao_buffer.hpp" // For VAOBuffer
-#include <glm/gtc/type_ptr.hpp> // For glm::value_ptr
+#include "shaderClass.h"
+#include "buffers/vao_buffer.hpp"
+#include "buffers/general_buffer.hpp" // Included for potential EBO size check logic
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream> // For potential warnings/errors
+
+// Constructor is now fully defined in the header (TrianglesObject.h)
+// due to the template-like nature of std::unique_ptr and direct AABB calculation.
 
 void TrianglesObject::draw(Shader& shader, const glm::mat4& cameraMatrix, const glm::mat4& parentWorldMatrix) {
     if (!m_vao) {
-        // This should ideally be caught by constructor, but as a safeguard:
         throw std::runtime_error("TrianglesObject::draw called with null VAOBuffer");
     }
-    if (m_numIndices == 0) {
-        return; // Nothing to draw
-    }
+    // It's okay if m_numIndices is 0, just means nothing visible will be drawn.
+    // The check for m_numIndices == 0 and returning might be desired if it's an error state,
+    // but for an empty object it's valid.
 
     // Calculate the final world matrix for this object
-    glm::mat4 worldMatrix = parentWorldMatrix * this->localModelMatrix;
+    glm::mat4 currentObjectWorldMatrix = parentWorldMatrix * this->localModelMatrix;
 
     // Activate the shader program
     shader.Activate();
 
     // Set the model matrix uniform
-    // Ensure your Shader class has a way to get shader.ID or use a helper like shader.setMat4("model", worldMatrix);
     GLint modelLoc = glGetUniformLocation(shader.ID, "model");
     if (modelLoc != -1) {
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(worldMatrix));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(currentObjectWorldMatrix));
     } else {
-        // std::cerr << "Warning: Uniform 'model' not found in shader." << std::endl;
+        // Optional: std::cerr << "Warning: Uniform 'model' not found in shader." << std::endl;
     }
 
     // Set the camera (view-projection) matrix uniform
@@ -32,21 +35,28 @@ void TrianglesObject::draw(Shader& shader, const glm::mat4& cameraMatrix, const 
     if (camMatrixLoc != -1) {
         glUniformMatrix4fv(camMatrixLoc, 1, GL_FALSE, glm::value_ptr(cameraMatrix));
     } else {
-        // std::cerr << "Warning: Uniform 'camMatrix' not found in shader." << std::endl;
+        // Optional: std::cerr << "Warning: Uniform 'camMatrix' not found in shader." << std::endl;
     }
 
     // Bind the VAO
     m_vao->quickBind();
 
-    // Draw the elements
-    // The count of indices is now stored in m_numIndices.
-    // The type of indices is assumed to be GL_UNSIGNED_INT based on typical EBO setup.
-    // The last parameter is an offset into the EBO, typically 0 (nullptr).
-    glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, nullptr);
+    // Activate necessary vertex attributes (if not persistently enabled in VAO setup)
+    // Assuming VAO setup correctly enables attributes.
+    // If not, you might need:
+    // m_vao->activateSlot(VAOSlot::kPositions);
+    // ... and other used slots
 
-    // Unbind the VAO - it's good practice to unbind after drawing,
-    // though some rendering strategies might do this at a higher level (e.g., end of render pass).
+    if (m_numIndices > 0) { // Only draw if there are indices
+        // The type of indices (GL_UNSIGNED_INT, GL_UNSIGNED_SHORT, etc.)
+        // should ideally be known or queried from the EBO.
+        // For now, assuming GL_UNSIGNED_INT as it's common.
+        GLenum indexType = GL_UNSIGNED_INT;
+        // One could potentially store this or deduce it from the EBO's GeneralBuffer's mapping if complex.
+        // For example: if (auto ebo = m_vao->getBufferAt(VAOSlot::kIndices).lock()) { indexType = ebo->getDataMapAt(0).type; }
+
+        glDrawElements(GL_TRIANGLES, m_numIndices, indexType, nullptr);
+    }
+
     VAOBuffer::unbind();
-
-    // Do not deactivate shader here, it might be used by other objects.
 }

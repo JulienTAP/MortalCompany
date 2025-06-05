@@ -160,7 +160,7 @@ int main(){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Handles camera inputs
-		camera.Inputs(window);
+		camera.Inputs(window, {}, 1.0f / 60.0f);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(FOV, nearPlane, farPlane);
 

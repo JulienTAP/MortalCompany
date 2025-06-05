@@ -1,16 +1,17 @@
 #ifndef INC_3DOBJECT_H
 #define INC_3DOBJECT_H
 
-#include "buffers/vao_buffer.hpp" // Though not directly used by object3D itself for drawing
+#include "buffers/vao_buffer.hpp"
 #include "glm/fwd.hpp"
-#include "glm/glm.hpp" // For glm::mat4
+#include "glm/glm.hpp"
 #include <vector>
-#include <memory> // For std::unique_ptr
+#include <memory>
 
-#include "drawable.h" // Base class
-#include "shaderClass.h" // For Shader&
+#include "drawable.h"
+#include "shaderClass.h"
+#include "physics/AABB.h" // Make sure AABB is included
 
-class object3D : public Drawable { // object3D is also a Drawable
+class object3D : public Drawable {
 public:
     /**
      * @brief Draws the object and its children.
@@ -50,7 +51,17 @@ public:
         return nullptr;
     }
 
+    /**
+     * @brief Calculates and returns the AABB of this object and all its children in world space.
+     * @param parentWorldMatrix The world transformation matrix of this object's parent.
+     * @return The combined AABB in world space.
+     */
+    [[nodiscard]] Physics::AABB getWorldAABB(const glm::mat4& parentWorldMatrix) const override;
+
+
     // Constructor: Initializes Drawable base, which sets up localModelMatrix to identity.
+    // localAABB for an object3D container itself is typically default (empty/invalid)
+    // unless it also has its own direct geometry (not common for a pure container).
     object3D() : Drawable(glm::mat4(1.0f)) {}
 
 private:
