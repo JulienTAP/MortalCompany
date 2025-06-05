@@ -1,44 +1,59 @@
 #version 330 core
 
-// Outputs colors in RGBA
+// Inputs from Vertex Shader
+in vec3 crntPos;   // World position
+in vec3 Normal;    // Transformed normal
+in vec2 texCoord;
+in vec3 vertColor; // Vertex color (passed through)
+
+// Output color
 out vec4 FragColor;
 
-
-// Imports the color from the Vertex Shader
-in vec3 color;
-// Imports the texture coordinates from the Vertex Shader
-in vec2 texCoord;
-// Imports the normal from the Vertex Shader
-in vec3 Normal;
-// Imports the current position from the Vertex Shader
-in vec3 crntPos;
-
-// Gets the Texture Unit from the main function
+// Uniforms
 uniform sampler2D tex0;
-// Gets the color of the light from the main function
 uniform vec4 lightColor;
-// Gets the position of the light from the main function
 uniform vec3 lightPos;
-// Gets the position of the camera from the main function
-uniform vec3 camPos;
+uniform vec3 camPos;     // Camera position in world space
 
 void main()
 {
-	// ambient lighting
-	float ambient = 0.20f;
+	// Texture color
+	vec4 textureColor = texture(tex0, texCoord);
 
-	// diffuse lighting
-	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(lightPos - crntPos);
-	float diffuse = max(dot(normal, lightDirection), 0.0f);
+	// Normalize the incoming Normal vector.
+	vec3 norm = normalize(Normal);
+    // vec3 correctedNorm = -norm; // Reverted for now, using raw 'norm'
+    vec3 correctedNorm = norm;
 
-	// specular lighting
-	float specularLight = 0.50f;
-	vec3 viewDirection = normalize(camPos - crntPos);
-	vec3 reflectionDirection = reflect(-lightDirection, normal);
-	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
-	float specular = specAmount * specularLight;
+	// Ambient lighting - INCREASED for visibility
+	float ambientStrength = 0.5f; // Increased significantly
+	vec3 ambient = ambientStrength * lightColor.rgb * textureColor.rgb;
 
-	// outputs final color
-	FragColor = texture(tex0, texCoord) * lightColor * (diffuse + ambient + specular);
+	// Diffuse lighting
+    // Light direction from surface point to light source
+	vec3 lightDir = normalize(lightPos - crntPos);
+    // Calculate diffuse intensity using the (currently un-flipped) normal
+	float diffuseFactor = max(dot(correctedNorm, lightDir), 0.0f);
+	vec3 diffuse = diffuseFactor * lightColor.rgb * textureColor.rgb;
+
+	// Specular lighting (kept for now, but diffuse is key for this test)
+	float specularStrength = 0.50f;
+    // View direction from surface point to camera
+	vec3 viewDir = normalize(camPos - crntPos);
+    // Incident light vector (from light source towards surface point)
+    vec3 incidentLightDir = -lightDir;
+    // Reflection direction, using the (currently un-flipped) normal
+	vec3 reflectDir = reflect(incidentLightDir, correctedNorm);
+    // Shininess factor
+    float shininess = 32.0f;
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0f), shininess);
+	vec3 specular = specularStrength * spec * lightColor.rgb;
+
+    // Final color: Focus on diffuse and ambient for diagnosis
+	vec3 lighting = ambient + diffuse + specular; // Original full lighting
+	// vec3 lighting = ambient + diffuse; // Option 1: Remove specular to focus on diffuse
+    // vec3 lighting = vec3(diffuseFactor); // Option 2: Visualize only the diffuse factor (grayscale)
+
+	FragColor = vec4(lighting, textureColor.a);
+    // FragColor = vec4(clamp(lighting, 0.0, 1.0), textureColor.a); // Optional clamping
 }

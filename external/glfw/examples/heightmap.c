@@ -471,7 +471,7 @@ int main(int argc, char** argv)
     /* Create vao + vbo to store the mesh */
     /* Create the vbo to store all the information for the grid and the height */
 
-    /* setup the scene ready for rendering */
+    /* setup the scenes ready for rendering */
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

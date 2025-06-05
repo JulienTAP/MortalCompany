@@ -1,10 +1,21 @@
 set(APP "OpenGL")
 set(CWD ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(${APP})
+add_executable(${APP}
+        ../include/objects/object3D.h)
+
+SET(
+        BUFFERS_DIR
+        ${CWD}/buffers/general_buffer.cpp
+        ${CWD}/buffers/vao_buffer.cpp
+)
 
 SET(
         SRC_DIR
+        ${BUFFERS_DIR}
+        ${CWD}/drawable.cpp
+        ${CWD}/renders/triangles_object.cpp
+        ${CWD}/objects/object3D.cpp
         ${CWD}/main.cpp
         ${CWD}/camera.cpp
         ${CWD}/EBO.cpp

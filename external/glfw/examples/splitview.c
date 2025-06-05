@@ -2,7 +2,7 @@
 // This is an example program for the GLFW library
 //
 // The program uses a "split window" view, rendering four views of the
-// same scene in one window (e.g. useful for 3D modelling software). This
+// same scenes in one window (e.g. useful for 3D modelling software). This
 // demo uses scissors to separate the four different rendering areas from
 // each other.
 //
@@ -115,7 +115,7 @@ static void drawTorus(void)
 
 
 //========================================================================
-// Draw the scene (a rotating torus)
+// Draw the scenes (a rotating torus)
 //========================================================================
 
 static void drawScene(void)
@@ -337,7 +337,7 @@ static void drawAllViews(void)
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHTING);
 
-    // Draw scene
+    // Draw scenes
     drawScene();
 
     // Disable lighting
