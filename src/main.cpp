@@ -31,6 +31,11 @@ const float hallWidth = roomSize / 3.0f;
 const float hallHeight = roomSize / 3.0f;
 const float hallLength = roomSize * 2.0f;
 
+// New Room Dimensions
+const float newRoomWidth = roomSize * 3.0f;
+const float newRoomLength = roomSize * 2.0f;
+const float newRoomHeight = roomSize;
+
 
 Vertex planeVertices[] =
     {
@@ -247,21 +252,64 @@ int main()
     collidableObjects.push_back(hall_wall_right.get());
     hall->addObject(std::move(hall_wall_right));
 
-    // Hall Back Wall (to "close the box")
-    auto hall_wall_back = createTexturedPlane(planeVerts, planeInd, wallTextures);
-    hall_wall_back->setLocalModelMatrix(
-        // Position at the very end of the hall
-        glm::translate(glm::mat4(1.0f), glm::vec3(roomSize / 2.0f + hallLength, 0.0f, 0.0f)) *
-        // Rotate it to be a vertical wall facing inwards
+    root->addObject(std::move(hall));
+
+    // --- New Room Construction ---
+    auto newRoom = std::make_unique<object3D>();
+    // The center of the new room, positioned at the end of the hall
+    glm::vec3 newRoomCenter = glm::vec3(roomSize / 2.0f + hallLength + newRoomLength / 2.0f, 0.0f, 0.0f);
+
+    // New Room Floor
+    auto new_floor = createTexturedPlane(planeVerts, planeInd, floorTextures);
+    new_floor->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(newRoomCenter.x, -newRoomHeight / 2.0f, newRoomCenter.z)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(newRoomLength, 1.0f, newRoomWidth))
+    );
+    collidableObjects.push_back(new_floor.get());
+    newRoom->addObject(std::move(new_floor));
+
+    // New Room Ceiling
+    auto new_ceiling = createTexturedPlane(planeVerts, planeInd, ceilingTextures);
+    new_ceiling->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(newRoomCenter.x, newRoomHeight / 2.0f, newRoomCenter.z)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(newRoomLength, 1.0f, newRoomWidth))
+    );
+    collidableObjects.push_back(new_ceiling.get());
+    newRoom->addObject(std::move(new_ceiling));
+
+    // New Room Back Wall
+    auto new_wall_back = createTexturedPlane(planeVerts, planeInd, wallTextures);
+    new_wall_back->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(newRoomCenter.x + newRoomLength / 2.0f, 0.0f, 0.0f)) *
         glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
         glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
-        // Scale it to the height and width of the hall
-        glm::scale(glm::mat4(1.0f), glm::vec3(hallWidth, 1.0f, hallHeight))
+        glm::scale(glm::mat4(1.0f), glm::vec3(newRoomWidth, 1.0f, newRoomHeight))
     );
-    collidableObjects.push_back(hall_wall_back.get());
-    hall->addObject(std::move(hall_wall_back));
+    collidableObjects.push_back(new_wall_back.get());
+    newRoom->addObject(std::move(new_wall_back));
 
-    root->addObject(std::move(hall));
+    // New Room Left Wall
+    auto new_wall_left = createTexturedPlane(planeVerts, planeInd, wallTextures);
+    new_wall_left->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(newRoomCenter.x, 0.0f, -newRoomWidth / 2.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(newRoomLength, 1.0f, newRoomHeight))
+    );
+    collidableObjects.push_back(new_wall_left.get());
+    newRoom->addObject(std::move(new_wall_left));
+
+    // New Room Right Wall
+    auto new_wall_right = createTexturedPlane(planeVerts, planeInd, wallTextures);
+    new_wall_right->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(newRoomCenter.x, 0.0f, newRoomWidth / 2.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(newRoomLength, 1.0f, newRoomHeight))
+    );
+    collidableObjects.push_back(new_wall_right.get());
+    newRoom->addObject(std::move(new_wall_right));
+
+    root->addObject(std::move(newRoom));
 
 
     // --- Light and Camera Setup ---
