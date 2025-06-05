@@ -37,7 +37,7 @@ public:
     int height;
 
     // Adjust the speed of the camera and it's sensitivity when looking around
-    float speed = 0.02; // Adjusted default speed
+    float speed = 0.05; // Adjusted default speed
     float sensitivity = 1500.0f; // Increased sensitivity to compensate for deltaTime scaling
 
     // Dimensions of the camera's collision bounding box (half-extents)
