@@ -35,30 +35,32 @@ void Camera::Matrix(Shader& shader, const char* uniform)
 void Camera::Inputs(GLFWwindow* window)
 {
 	// Handles key inputs
+	glm::vec3 direction(0.0f);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		Position += speed * Orientation;
+		direction += Orientation;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+		direction += -glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		Position += speed * -Orientation;
+		direction += -Orientation;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		Position += speed * glm::normalize(glm::cross(Orientation, Up));
+		direction += glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		Position += speed * Up;
+		direction += Up;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
-		Position += speed * -Up;
+		direction += -Up;
 	}
+
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		speed = 0.06f;
@@ -66,6 +68,41 @@ void Camera::Inputs(GLFWwindow* window)
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
 		speed = 0.03f;
+	}
+
+	// Normalize the direction vector to have consistent speed
+	if (glm::length(direction) > 0.0f)
+	{
+		direction = glm::normalize(direction);
+	}
+
+	glm::vec3 velocity = direction * speed;
+	glm::vec3 newPos = Position + velocity;
+
+	if (isPositionValid(newPos))
+	{
+		Position = newPos;
+	}
+	else
+	{
+		// Slide along walls by trying each axis separately
+		glm::vec3 tempPos = Position;
+		tempPos.x += velocity.x;
+		if (isPositionValid(tempPos)) {
+			Position.x = tempPos.x;
+		}
+
+		tempPos = Position;
+		tempPos.z += velocity.z;
+		if (isPositionValid(tempPos)) {
+			Position.z = tempPos.z;
+		}
+
+		tempPos = Position;
+		tempPos.y += velocity.y;
+		if(isPositionValid(tempPos)) {
+			Position.y = tempPos.y;
+		}
 	}
 
 
@@ -89,7 +126,7 @@ void Camera::Inputs(GLFWwindow* window)
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		// Normalizes and shifts the coordinates of the cursor such that they begin in the middle of the screen
-		// and then "transforms" them into degrees 
+		// and then "transforms" them into degrees
 		float rotX = sensitivity * (float)(mouseY - (height / 2)) / height;
 		float rotY = sensitivity * (float)(mouseX - (width / 2)) / width;
 
@@ -115,4 +152,31 @@ void Camera::Inputs(GLFWwindow* window)
 		// Makes sure the next time the camera looks around it doesn't jump
 		firstClick = true;
 	}
+}
+
+bool Camera::isPositionValid(const glm::vec3& pos) {
+	// Radius/padding for collision
+	const float horizontalPadding = 0.2f;
+	const float verticalPadding = 0.4f;   // You can adjust this value for the floor/ceiling margin
+
+	// Define the valid Y range using the padding
+	const float minY = -1.0f + verticalPadding;
+	const float maxY =  1.0f - verticalPadding;
+
+	// Check if the position is inside the main room
+	bool inMainRoom = (pos.x >= -3.5f + horizontalPadding && pos.x <= 3.5f - horizontalPadding) &&
+					  (pos.y >= minY && pos.y <= maxY) &&
+					  (pos.z >= -3.5f + horizontalPadding && pos.z <= 3.5f);
+
+	// Check if the position is inside the corridor
+	bool inCorridor = (pos.x >= -0.5f + horizontalPadding && pos.x <= 0.5f - horizontalPadding) &&
+					  (pos.y >= minY && pos.y <= maxY) &&
+					  (pos.z >= 3.5f && pos.z <= 6.0f);
+
+	// Check if the position is inside the second room
+	bool inRoom2 =    (pos.x >= -3.0f + horizontalPadding && pos.x <= 3.0f - horizontalPadding) &&
+					  (pos.y >= minY && pos.y <= maxY) &&
+					  (pos.z >= 6.0f && pos.z <= 10.0f - horizontalPadding);
+
+	return inMainRoom || inCorridor || inRoom2;
 }
