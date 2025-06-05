@@ -9,6 +9,8 @@
 
 #include "mesh.h"
 #include "node.h"
+#include "sphere.h"
+#include "cylinder.h"
 
 /// constants for the camera
 const float FOV = 45.0f;
@@ -92,6 +94,86 @@ int main(){
 
     glViewport(0,0,width,height);
 
+    Shader color_shader	("./shaders/node.vert", "./shaders/node.frag");
+
+// Matrice de base pour placer l'humain dans la scène
+glm::mat4 human_mat = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f))
+    * glm::scale(glm::mat4(1.0f), glm::vec3(0.9f, 0.9f, 0.9f));
+Node* human = new Node(human_mat);
+
+// Tête
+Sphere* head = new Sphere(&color_shader, 0.5f, 32, 32);
+glm::mat4 mat_head = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 2.2f, 0.0f));
+Node* head_node = new Node(mat_head);
+head_node->add(head);
+human->add(head_node);
+
+// Tronc
+Cylinder* trunk = new Cylinder(&color_shader, 1.2f, 0.4f, 32);
+glm::mat4 mat_trunk = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f))
+    * glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+Node* trunk_node = new Node(mat_trunk);
+trunk_node->add(trunk);
+human->add(trunk_node);
+
+// Bras gauche
+Cylinder* left_arm = new Cylinder(&color_shader, 0.9f, 0.12f, 32);
+glm::mat4 mat_left_arm = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5f, 1.7f, 0.0f))
+    * glm::rotate(glm::mat4(1.0f), glm::radians(160.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+Node* left_arm_node = new Node(mat_left_arm);
+left_arm_node->add(left_arm);
+human->add(left_arm_node);
+
+// Main gauche
+Sphere* left_hand = new Sphere(&color_shader, 0.15f, 16, 16);
+glm::mat4 mat_left_hand = glm::translate(glm::mat4(1.0f), glm::vec3(-0.95f, 1.2f, 0.0f));
+Node* left_hand_node = new Node(mat_left_hand);
+left_hand_node->add(left_hand);
+human->add(left_hand_node);
+
+// Bras droit
+Cylinder* right_arm = new Cylinder(&color_shader, 0.9f, 0.12f, 32);
+glm::mat4 mat_right_arm = glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 1.7f, 0.0f))
+    * glm::rotate(glm::mat4(1.0f), glm::radians(-160.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+Node* right_arm_node = new Node(mat_right_arm);
+right_arm_node->add(right_arm);
+human->add(right_arm_node);
+
+// Main droite
+Sphere* right_hand = new Sphere(&color_shader, 0.15f, 16, 16);
+glm::mat4 mat_right_hand = glm::translate(glm::mat4(1.0f), glm::vec3(0.95f, 1.2f, 0.0f));
+Node* right_hand_node = new Node(mat_right_hand);
+right_hand_node->add(right_hand);
+human->add(right_hand_node);
+
+// Jambe gauche
+Cylinder* left_leg = new Cylinder(&color_shader, 1.0f, 0.15f, 32);
+glm::mat4 mat_left_leg = glm::translate(glm::mat4(1.0f), glm::vec3(-0.25f, 0.0f, 0.0f));
+Node* left_leg_node = new Node(mat_left_leg);
+left_leg_node->add(left_leg);
+human->add(left_leg_node);
+
+// Pied gauche
+Sphere* left_foot = new Sphere(&color_shader, 0.18f, 16, 16);
+glm::mat4 mat_left_foot = glm::translate(glm::mat4(1.0f), glm::vec3(-0.25f, -0.9f, 0.0f));
+Node* left_foot_node = new Node(mat_left_foot);
+left_foot_node->add(left_foot);
+human->add(left_foot_node);
+
+// Jambe droite
+Cylinder* right_leg = new Cylinder(&color_shader, 1.0f, 0.15f, 32);
+glm::mat4 mat_right_leg = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, 0.0f, 0.0f));
+Node* right_leg_node = new Node(mat_right_leg);
+right_leg_node->add(right_leg);
+human->add(right_leg_node);
+
+// Pied droit
+Sphere* right_foot = new Sphere(&color_shader, 0.18f, 16, 16);
+glm::mat4 mat_right_foot = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, -0.9f, 0.0f));
+Node* right_foot_node = new Node(mat_right_foot);
+right_foot_node->add(right_foot);
+human->add(right_foot_node);
+
 
 	Texture textures[]{
 		Texture("./textures/planks.png", "diffuse", 0, GL_RGBA, GL_UNSIGNED_BYTE),
@@ -161,11 +243,15 @@ int main(){
 
 		// Handles camera inputs
 		camera.Inputs(window, {}, 1.0f / 60.0f);
-		// Updates and exports the camera matrix to the Vertex Shader
+		// Draw the root node (which now includes the human model)
+				// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(FOV, nearPlane, farPlane);
 
 		// Draw the root node
+	
 		root->draw(camera);
+		
+
 
 		lightPos = glm::vec3(0.5f * sin(glfwGetTime()), 0.5f, 0.5f * cos(glfwGetTime()));
 		lightModel = glm::mat4(1.0f);
@@ -179,6 +265,9 @@ int main(){
 		glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
+
+		color_shader.Activate();
+		human->draw(camera);
 
 		// Swap the back buffer with the front buffer
 		glfwSwapBuffers(window);

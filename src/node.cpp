@@ -17,6 +17,11 @@ void Node::add(Mesh *mesh)
     children_mesh_.push_back(mesh);
 }
 
+void Node::add(Shape *shape)
+{
+    children_shape_.push_back(shape);
+}
+
 void Node::draw(Camera& camera)
 {
     for(auto child : children_)

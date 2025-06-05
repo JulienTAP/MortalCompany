@@ -27,6 +27,9 @@ SET(
         ${CWD}/stb_image.cpp
         ${CWD}/mesh.cpp
         ${CWD}/node.cpp
+        ${CWD}/sphere.cpp
+        ${CWD}/shape.cpp
+        ${CWD}/cylinder.cpp
 )
 
 target_sources(${APP} PRIVATE ${SRC_DIR})
