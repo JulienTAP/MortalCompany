@@ -125,46 +125,163 @@ int main(){
 float roomVertices[] = {
     //  Position           Color         TexCoords   Normals
     // Face arrière
-    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   0,0,-1,
-     2.0f, -2.0f, -2.0f,  1,1,1,   1,0,   0,0,-1,
-     2.0f,  2.0f, -2.0f,  1,1,1,   1,1,   0,0,-1,
-    -2.0f,  2.0f, -2.0f,  1,1,1,   0,1,   0,0,-1,
+    -3.5f, -1.0f, -3.5f,  1,1,1,   0,0,   0,0,-1,
+     3.5f, -1.0f, -3.5f,  1,1,1,   1,0,   0,0,-1,
+     3.5f,  1.0f, -3.5f,  1,1,1,   1,1,   0,0,-1,
+    -3.5f,  1.0f, -3.5f,  1,1,1,   0,1,   0,0,-1,
     // Face avant
-    -2.0f, -2.0f,  2.0f,  1,1,1,   0,0,   0,0,1,
-     2.0f, -2.0f,  2.0f,  1,1,1,   1,0,   0,0,1,
-     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   0,0,1,
-    -2.0f,  2.0f,  2.0f,  1,1,1,   0,1,   0,0,1,
+    -3.5f, -1.0f,  3.5f,  1,1,1,   0,0,   0,0,1,
+     3.5f, -1.0f,  3.5f,  1,1,1,   1,0,   0,0,1,
+     3.5f,  1.0f,  3.5f,  1,1,1,   1,1,   0,0,1,
+    -3.5f,  1.0f,  3.5f,  1,1,1,   0,1,   0,0,1,
     // Face gauche
-    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   -1,0,0,
-    -2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   -1,0,0,
-    -2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   -1,0,0,
-    -2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   -1,0,0,
+    -3.5f, -1.0f, -3.5f,  1,1,1,   0,0,   -1,0,0,
+    -3.5f,  1.0f, -3.5f,  1,1,1,   1,0,   -1,0,0,
+    -3.5f,  1.0f,  3.5f,  1,1,1,   1,1,   -1,0,0,
+    -3.5f, -1.0f,  3.5f,  1,1,1,   0,1,   -1,0,0,
     // Face droite
-     2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   1,0,0,
-     2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   1,0,0,
-     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   1,0,0,
-     2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   1,0,0,
+     3.5f, -1.0f, -3.5f,  1,1,1,   0,0,   1,0,0,
+     3.5f,  1.0f, -3.5f,  1,1,1,   1,0,   1,0,0,
+     3.5f,  1.0f,  3.5f,  1,1,1,   1,1,   1,0,0,
+     3.5f, -1.0f,  3.5f,  1,1,1,   0,1,   1,0,0,
     // Face bas
-    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   0,-1,0,
-     2.0f, -2.0f, -2.0f,  1,1,1,   1,0,   0,-1,0,
-     2.0f, -2.0f,  2.0f,  1,1,1,   1,1,   0,-1,0,
-    -2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   0,-1,0,
+    -3.5f, -1.0f, -3.5f,  1,1,1,   0,0,   0,-1,0,
+     3.5f, -1.0f, -3.5f,  1,1,1,   1,0,   0,-1,0,
+     3.5f, -1.0f,  3.5f,  1,1,1,   1,1,   0,-1,0,
+    -3.5f, -1.0f,  3.5f,  1,1,1,   0,1,   0,-1,0,
     // Face haut
-    -2.0f,  2.0f, -2.0f,  1,1,1,   0,0,   0,1,0,
-     2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   0,1,0,
-     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   0,1,0,
-    -2.0f,  2.0f,  2.0f,  1,1,1,   0,1,   0,1,0,
+    -3.5f,  1.0f, -3.5f,  1,1,1,   0,0,   0,1,0,
+     3.5f,  1.0f, -3.5f,  1,1,1,   1,0,   0,1,0,
+     3.5f,  1.0f,  3.5f,  1,1,1,   1,1,   0,1,0,
+    -3.5f,  1.0f,  3.5f,  1,1,1,   0,1,   0,1,0,
 };
-
+float roomFrontCapVertices[] = {
+    // Bouchon gauche
+    -3.5f, -1.0f, 3.5f,  1,1,1,  0,0,  0,0,1,
+    -0.5f, -1.0f, 3.5f,  1,1,1,  1,0,  0,0,1,
+    -0.5f,  1.0f, 3.5f,  1,1,1,  1,1,  0,0,1,
+    -3.5f,  1.0f, 3.5f,  1,1,1,  0,1,  0,0,1,
+    // Bouchon droite
+     0.5f, -1.0f, 3.5f,  1,1,1,  0,0,  0,0,1,
+     3.5f, -1.0f, 3.5f,  1,1,1,  1,0,  0,0,1,
+     3.5f,  1.0f, 3.5f,  1,1,1,  1,1,  0,0,1,
+     0.5f,  1.0f, 3.5f,  1,1,1,  0,1,  0,0,1,
+};
+unsigned int roomFrontCapIndices[] = {
+    0,1,2, 2,3,0, // bouchon gauche
+    4,5,6, 6,7,4  // bouchon droite
+};
 unsigned int roomIndices[] = {
     0,1,2,  2,3,0,      // back
-    4,5,6,  6,7,4,      // front
+    //4,5,6,  6,7,4,      // front
     8,9,10, 10,11,8,    // left
     12,13,14, 14,15,12, // right
     16,17,18, 18,19,16, // bottom
     20,21,22, 22,23,20  // top
 };
 
+// Couloir (par exemple, largeur 1, hauteur 2, profondeur 4, partant du centre de la face avant de la salle)
+float corridorVertices[] = {
+    //  Position           Color         TexCoords   Normals
+    // Face arrière (côté salle carrée, z = 3.5)
+    -0.5f, -1.0f,  3.5f,  1,1,1,   0,0,   0,0,-1,
+     0.5f, -1.0f,  3.5f,  1,1,1,   1,0,   0,0,-1,
+     0.5f,  1.0f,  3.5f,  1,1,1,   1,1,   0,0,-1,
+    -0.5f,  1.0f,  3.5f,  1,1,1,   0,1,   0,0,-1,
+    // Face avant (côté salle rectangulaire, z = 6.0)
+    -0.5f, -1.0f,  6.0f,  1,1,1,   0,0,   0,0,1,
+     0.5f, -1.0f,  6.0f,  1,1,1,   1,0,   0,0,1,
+     0.5f,  1.0f,  6.0f,  1,1,1,   1,1,   0,0,1,
+    -0.5f,  1.0f,  6.0f,  1,1,1,   0,1,   0,0,1,
+    // Face gauche
+    -0.5f, -1.0f,  3.5f,  1,1,1,   0,0,   -1,0,0,
+    -0.5f,  1.0f,  3.5f,  1,1,1,   1,0,   -1,0,0,
+    -0.5f,  1.0f,  6.0f,  1,1,1,   1,1,   -1,0,0,
+    -0.5f, -1.0f,  6.0f,  1,1,1,   0,1,   -1,0,0,
+    // Face droite
+     0.5f, -1.0f,  3.5f,  1,1,1,   0,0,   1,0,0,
+     0.5f,  1.0f,  3.5f,  1,1,1,   1,0,   1,0,0,
+     0.5f,  1.0f,  6.0f,  1,1,1,   1,1,   1,0,0,
+     0.5f, -1.0f,  6.0f,  1,1,1,   0,1,   1,0,0,
+    // Face bas
+    -0.5f, -1.0f,  3.5f,  1,1,1,   0,0,   0,-1,0,
+     0.5f, -1.0f,  3.5f,  1,1,1,   1,0,   0,-1,0,
+     0.5f, -1.0f,  6.0f,  1,1,1,   1,1,   0,-1,0,
+    -0.5f, -1.0f,  6.0f,  1,1,1,   0,1,   0,-1,0,
+    // Face haut
+    -0.5f,  1.0f,  3.5f,  1,1,1,   0,0,   0,1,0,
+     0.5f,  1.0f,  3.5f,  1,1,1,   1,0,   0,1,0,
+     0.5f,  1.0f,  6.0f,  1,1,1,   1,1,   0,1,0,
+    -0.5f,  1.0f,  6.0f,  1,1,1,   0,1,   0,1,0,
+};
+
+unsigned int corridorIndices[] = {
+    //0,1,2,  2,3,0,      // back
+    //4,5,6,  6,7,4,      // front
+    8,9,10, 10,11,8,    // left
+    12,13,14, 14,15,12, // right
+    16,17,18, 18,19,16, // bottom
+    20,21,22, 22,23,20  // top
+};
+
+// Salle rectangulaire (par exemple, largeur 3, hauteur 2, profondeur 4, centrée en z=8)
+float room2Vertices[] = {
+    //  Position           Color         TexCoords   Normals
+    // Face arrière
+    -3.0f, -1.0f,  6.0f,  1,1,1,   0,0,   0,0,-1,
+     3.0f, -1.0f,  6.0f,  1,1,1,   1,0,   0,0,-1,
+     3.0f,  1.0f,  6.0f,  1,1,1,   1,1,   0,0,-1,
+    -3.0f,  1.0f,  6.0f,  1,1,1,   0,1,   0,0,-1,
+    // Face avant
+    -3.0f, -1.0f, 10.0f,  1,1,1,   0,0,   0,0,1,
+     3.0f, -1.0f, 10.0f,  1,1,1,   1,0,   0,0,1,
+     3.0f,  1.0f, 10.0f,  1,1,1,   1,1,   0,0,1,
+    -3.0f,  1.0f, 10.0f,  1,1,1,   0,1,   0,0,1,
+    // Face gauche
+    -3.0f, -1.0f,  6.0f,  1,1,1,   0,0,   -1,0,0,
+    -3.0f,  1.0f,  6.0f,  1,1,1,   1,0,   -1,0,0,
+    -3.0f,  1.0f, 10.0f,  1,1,1,   1,1,   -1,0,0,
+    -3.0f, -1.0f, 10.0f,  1,1,1,   0,1,   -1,0,0,
+    // Face droite
+     3.0f, -1.0f,  6.0f,  1,1,1,   0,0,   1,0,0,
+     3.0f,  1.0f,  6.0f,  1,1,1,   1,0,   1,0,0,
+     3.0f,  1.0f, 10.0f,  1,1,1,   1,1,   1,0,0,
+     3.0f, -1.0f, 10.0f,  1,1,1,   0,1,   1,0,0,
+    // Face bas
+    -3.0f, -1.0f,  6.0f,  1,1,1,   0,0,   0,-1,0,
+     3.0f, -1.0f,  6.0f,  1,1,1,   1,0,   0,-1,0,
+     3.0f, -1.0f, 10.0f,  1,1,1,   1,1,   0,-1,0,
+    -3.0f, -1.0f, 10.0f,  1,1,1,   0,1,   0,-1,0,
+    // Face haut
+    -3.0f,  1.0f,  6.0f,  1,1,1,   0,0,   0,1,0,
+     3.0f,  1.0f,  6.0f,  1,1,1,   1,0,   0,1,0,
+     3.0f,  1.0f, 10.0f,  1,1,1,   1,1,   0,1,0,
+    -3.0f,  1.0f, 10.0f,  1,1,1,   0,1,   0,1,0,
+};
+float room2BackCapVertices[] = {
+    // Bouchon gauche
+    -3.0f, -1.0f, 6.0f,  1,1,1,  0,0,  0,0,-1,
+    -0.5f, -1.0f, 6.0f,  1,1,1,  1,0,  0,0,-1,
+    -0.5f,  1.0f, 6.0f,  1,1,1,  1,1,  0,0,-1,
+    -3.0f,  1.0f, 6.0f,  1,1,1,  0,1,  0,0,-1,
+    // Bouchon droite
+     0.5f, -1.0f, 6.0f,  1,1,1,  0,0,  0,0,-1,
+     3.0f, -1.0f, 6.0f,  1,1,1,  1,0,  0,0,-1,
+     3.0f,  1.0f, 6.0f,  1,1,1,  1,1,  0,0,-1,
+     0.5f,  1.0f, 6.0f,  1,1,1,  0,1,  0,0,-1,
+};
+unsigned int room2BackCapIndices[] = {
+    0,1,2, 2,3,0, // bouchon gauche
+    4,5,6, 6,7,4  // bouchon droite
+};
+unsigned int room2Indices[] = {
+    //0,1,2,  2,3,0,      // back
+    4,5,6,  6,7,4,      // front
+    8,9,10, 10,11,8,    // left
+    12,13,14, 14,15,12, // right
+    16,17,18, 18,19,16, // bottom
+    20,21,22, 22,23,20  // top
+};
 
     // Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("./shaders/default.vert.txt", "./shaders/default.frag.txt");
@@ -185,7 +302,53 @@ unsigned int roomIndices[] = {
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+	VAO corridorVAO;
+corridorVAO.Bind();
+VBO corridorVBO(corridorVertices, sizeof(corridorVertices));
+EBO corridorEBO(corridorIndices, sizeof(corridorIndices));
+corridorVAO.LinkAttrib(corridorVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+corridorVAO.LinkAttrib(corridorVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+corridorVAO.LinkAttrib(corridorVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+corridorVAO.LinkAttrib(corridorVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+corridorVAO.Unbind();
+corridorVBO.Unbind();
+corridorEBO.Unbind();
 
+VAO roomFrontCapVAO;
+roomFrontCapVAO.Bind();
+VBO roomFrontCapVBO(roomFrontCapVertices, sizeof(roomFrontCapVertices));
+EBO roomFrontCapEBO(roomFrontCapIndices, sizeof(roomFrontCapIndices));
+roomFrontCapVAO.LinkAttrib(roomFrontCapVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+roomFrontCapVAO.LinkAttrib(roomFrontCapVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+roomFrontCapVAO.LinkAttrib(roomFrontCapVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+roomFrontCapVAO.LinkAttrib(roomFrontCapVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+roomFrontCapVAO.Unbind();
+roomFrontCapVBO.Unbind();
+roomFrontCapEBO.Unbind();
+
+VAO room2VAO;
+room2VAO.Bind();
+VBO room2VBO(room2Vertices, sizeof(room2Vertices));
+EBO room2EBO(room2Indices, sizeof(room2Indices));
+room2VAO.LinkAttrib(room2VBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+room2VAO.LinkAttrib(room2VBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+room2VAO.LinkAttrib(room2VBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+room2VAO.LinkAttrib(room2VBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+room2VAO.Unbind();
+room2VBO.Unbind();
+room2EBO.Unbind();
+
+VAO room2BackCapVAO;
+room2BackCapVAO.Bind();
+VBO room2BackCapVBO(room2BackCapVertices, sizeof(room2BackCapVertices));
+EBO room2BackCapEBO(room2BackCapIndices, sizeof(room2BackCapIndices));
+room2BackCapVAO.LinkAttrib(room2BackCapVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
+room2BackCapVAO.LinkAttrib(room2BackCapVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
+room2BackCapVAO.LinkAttrib(room2BackCapVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
+room2BackCapVAO.LinkAttrib(room2BackCapVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+room2BackCapVAO.Unbind();
+room2BackCapVBO.Unbind();
+room2BackCapEBO.Unbind();
 	// Génère VAO/VBO/EBO pour la salle
 VAO roomVAO;
 roomVAO.Bind();
@@ -202,6 +365,9 @@ roomEBO.Unbind();
 // Texture
 Texture roomTex("./textures/texture1.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
 roomTex.texUnit(shaderProgram, "tex0", 0);
+
+Texture metalTex("./textures/TexturesCom_Metal.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+metalTex.texUnit(shaderProgram, "tex0", 0);
 
 	// Shader for light cube
 	Shader lightShader("./shaders/light.vert.txt", "./shaders/light.frag.txt");
@@ -273,6 +439,30 @@ camera.Matrix(shaderProgram, "camMatrix");
 roomTex.Bind();
 roomVAO.Bind();
 glDrawElements(GL_TRIANGLES, sizeof(roomIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
+// Couloir
+shaderProgram.Activate();
+roomTex.Bind();
+corridorVAO.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(corridorIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
+// Salle rectangulaire
+shaderProgram.Activate();
+roomTex.Bind();
+room2VAO.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(room2Indices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
+// Bouchons salle carrée
+shaderProgram.Activate();
+roomTex.Bind();
+roomFrontCapVAO.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(roomFrontCapIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
+
+// Bouchons salle rectangulaire
+shaderProgram.Activate();
+roomTex.Bind();
+room2BackCapVAO.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(room2BackCapIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
 		// Tells OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
