@@ -1,5 +1,6 @@
 #include "node.h"
 #include "mesh.h"
+#include "shape.h"
 #include <iostream>
 
 Node::Node(const glm::mat4 &transform) : transform_(transform)
@@ -34,6 +35,10 @@ void Node::draw(Camera& camera)
     for (auto child : children_mesh_)
     {
         child->Draw(camera);
+    }
+    for (auto child : children_shape_)
+    {
+        child->draw(camera.cameraMatrix, camera.cameraMatrix, camera.cameraMatrix);
     }
 }
 
