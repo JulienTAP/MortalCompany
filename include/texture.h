@@ -14,6 +14,12 @@ public:
 	GLuint unit;
 
 	Texture(const char* image, const char* texType, GLenum slot, GLenum format, GLenum pixelType);
+	Texture()
+	{
+		ID = 0;
+		type = nullptr;
+		unit = 0;
+	}
 
 	// Assigns a texture unit to a texture
 	void texUnit(Shader& shader, const char* uniform, GLuint unit);

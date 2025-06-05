@@ -15,6 +15,7 @@ SET(
         ${CWD}/stb_image.cpp
         ${CWD}/mesh.cpp
         ${CWD}/node.cpp
+        ${CWD}/elements.cpp
 )
 
 target_sources(${APP} PRIVATE ${SRC_DIR})
@@ -30,4 +31,11 @@ add_custom_target(copy_shaders ALL
         COMMENT "Copying shader files to runtime directory"
 )
 
-add_dependencies(${APP} copy_shaders)
+add_dependencies(${APP} copy_textures)
+
+add_custom_target(copy_textures ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${TEXTURES_DIR} ${CMAKE_BINARY_DIR}/bin/textures
+        COMMENT "Copying textures files to runtime directory"
+)
+
+add_dependencies(${APP} copy_textures)

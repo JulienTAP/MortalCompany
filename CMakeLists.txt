@@ -12,6 +12,9 @@ set(RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Shaders directory
 set(SHADERS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders/)
 add_compile_definitions(SHADERS_DIR="${SHADERS_DIR}")
+# Textures directory
+set(TEXTURES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/textures/)
+add_compile_definitions(TEXTURES_DIR="${TEXTURES_DIR}")
 
 # Set directories
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)
