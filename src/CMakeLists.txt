@@ -18,6 +18,7 @@ SET(
         ${CWD}/objects/object3D.cpp
         ${CWD}/main.cpp
         ${CWD}/camera.cpp
+        ${CWD}/mesh.cpp
         ${CWD}/EBO.cpp
         ${CWD}/VAO.cpp
         ${CWD}/VBO.cpp
