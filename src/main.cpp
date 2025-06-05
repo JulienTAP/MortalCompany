@@ -470,13 +470,21 @@ glDrawElements(GL_TRIANGLES, sizeof(room2BackCapIndices)/sizeof(unsigned int), G
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		// Export the camMatrix to the Vertex Shader of the pyramid
 		camera.Matrix(shaderProgram, "camMatrix");
-		// Binds texture so that is appears in rendering
-		sphereTex.Bind();
-		// Bind the VAO so OpenGL knows to use it
-		VAO1.Bind();
-		// Draw primitives, number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		// Sphère brillante au plafond de la salle carrée
+shaderProgram.Activate();
+glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
+// Matrice modèle pour placer la sphère au plafond de la salle carrée (y = +1.0f - radius)
+glm::mat4 sphereModel = glm::mat4(1.0f);
+sphereModel = glm::translate(sphereModel, glm::vec3(0.0f, 0.5f, 0.0f));
+sphereModel = glm::scale(sphereModel, glm::vec3(0.5f, 0.5f, 0.5f));
+glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(sphereModel));
+
+camera.Matrix(shaderProgram, "camMatrix");
+sphereTex.Bind();
+VAO1.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+		
 
 
 		// Tells OpenGL which Shader Program we want to use
