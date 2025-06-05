@@ -1,10 +1,14 @@
 #include "mesh.h"
 
-Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures)
+Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<GLuint> &indices, std::vector<Texture> &textures, Shader &shader)
+	: shader(shader) // Initialize the shader
 {
+	// Store the shader for easy access
 	Mesh::vertices = vertices;
-	Mesh::indices = indices; 
+	Mesh::indices = indices;
 	Mesh::textures = textures;
+
+	Mesh::shader = shader;
 
 	vao.Bind();
 	// Generates Vertex Buffer Object and links it to vertices
@@ -12,17 +16,17 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	// Generates Element Buffer Object and links it to indices
 	EBO EBO(indices);
 	// Links VBO attributes such as coordinates and colors to vao
-	vao.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
-	vao.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-	vao.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
-	vao.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float)));
+	vao.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void *)0);
+	vao.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void *)(3 * sizeof(float)));
+	vao.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void *)(6 * sizeof(float)));
+	vao.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void *)(9 * sizeof(float)));
 	// Unbind all to prevent accidentally modifying them
 	vao.Unbind();
 	VBO.Unbind();
 	EBO.Unbind();
 }
 
-void Mesh::Draw(Shader& shader, Camera& camera)
+void Mesh::Draw(Camera &camera)
 {
 	// Bind shader to be able to access uniforms
 	shader.Activate();

@@ -27,6 +27,7 @@ set(SOURCES
     ${SRC_DIR}/texture.cpp
     ${SRC_DIR}/camera.cpp
     ${SRC_DIR}/mesh.cpp
+    ${SRC_DIR}/node.cpp
 )
 
 # Define Shader director

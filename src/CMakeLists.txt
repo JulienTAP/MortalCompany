@@ -13,6 +13,8 @@ SET(
         ${CWD}/texture.cpp
         ${CWD}/shaderClass.cpp
         ${CWD}/stb_image.cpp
+        ${CWD}/mesh.cpp
+        ${CWD}/node.cpp
 )
 
 target_sources(${APP} PRIVATE ${SRC_DIR})

@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "mesh.h"
+#include "node.h"
 
 /// constants for the camera
 const float FOV = 45.0f;
@@ -104,7 +105,7 @@ int main(){
 	std::vector <GLuint> ind(indices, indices + sizeof(indices) / sizeof(GLuint));
 	std::vector <Texture> tex(textures, textures + sizeof(textures) / sizeof(Texture));
 	// Create floor mesh
-	Mesh floor(verts, ind, tex);
+	Mesh floor(verts, ind, tex, shaderProgram);
 
 
 	// Shader for light cube
@@ -113,7 +114,7 @@ int main(){
 	std::vector <Vertex> lightVerts(lightVertices, lightVertices + sizeof(lightVertices) / sizeof(Vertex));
 	std::vector <GLuint> lightInd(lightIndices, lightIndices + sizeof(lightIndices) / sizeof(GLuint));
 	// Create light mesh
-	Mesh light(lightVerts, lightInd, tex);
+	Mesh light(lightVerts, lightInd, tex, lightShader);
 
 
 
@@ -122,18 +123,26 @@ int main(){
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
-	glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 pyramidModel = glm::mat4(1.0f);
-	pyramidModel = glm::translate(pyramidModel, pyramidPos);
+	glm::vec3 floorPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 floorModel = glm::mat4(1.0f);
+	floorModel = glm::translate(floorModel, floorPos);
 
 
 	lightShader.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
 	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModel));
+	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(floorModel));
 	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	Node *root = new Node();
+	root->add(&floor);
+
+	Node *lightNode = new Node(glm::translate(glm::mat4(1.0f), lightPos));
+	lightNode->add(&light);
+
+	root->add(lightNode);
 
 
 	// Enables the Depth Buffer
@@ -154,11 +163,22 @@ int main(){
 		camera.Inputs(window);
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(FOV, nearPlane, farPlane);
+d
+		// Draw the root node
+		root->draw(camera);
 
-		// Draw the floor
-		floor.Draw(shaderProgram, camera);
-		// Draw the light
-		light.Draw(lightShader, camera);
+		lightPos = glm::vec3(0.5f * sin(glfwGetTime()), 0.5f, 0.5f * cos(glfwGetTime()));
+		lightModel = glm::mat4(1.0f);
+		lightModel = glm::translate(lightModel, lightPos);
+
+		lightShader.Activate();
+		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModel));
+		glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+		shaderProgram.Activate();
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(floorModel));
+		glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 
 
 		// Swap the back buffer with the front buffer
