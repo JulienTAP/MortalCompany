@@ -121,6 +121,50 @@ int main(){
     generateSphere(radius, faces, vertices, indices);
 	generateSphere(lightRadius, lightFaces, lightVertices, lightIndices);
 	
+	// Vertices for a textured cube (room)
+float roomVertices[] = {
+    //  Position           Color         TexCoords   Normals
+    // Face arrière
+    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   0,0,-1,
+     2.0f, -2.0f, -2.0f,  1,1,1,   1,0,   0,0,-1,
+     2.0f,  2.0f, -2.0f,  1,1,1,   1,1,   0,0,-1,
+    -2.0f,  2.0f, -2.0f,  1,1,1,   0,1,   0,0,-1,
+    // Face avant
+    -2.0f, -2.0f,  2.0f,  1,1,1,   0,0,   0,0,1,
+     2.0f, -2.0f,  2.0f,  1,1,1,   1,0,   0,0,1,
+     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   0,0,1,
+    -2.0f,  2.0f,  2.0f,  1,1,1,   0,1,   0,0,1,
+    // Face gauche
+    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   -1,0,0,
+    -2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   -1,0,0,
+    -2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   -1,0,0,
+    -2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   -1,0,0,
+    // Face droite
+     2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   1,0,0,
+     2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   1,0,0,
+     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   1,0,0,
+     2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   1,0,0,
+    // Face bas
+    -2.0f, -2.0f, -2.0f,  1,1,1,   0,0,   0,-1,0,
+     2.0f, -2.0f, -2.0f,  1,1,1,   1,0,   0,-1,0,
+     2.0f, -2.0f,  2.0f,  1,1,1,   1,1,   0,-1,0,
+    -2.0f, -2.0f,  2.0f,  1,1,1,   0,1,   0,-1,0,
+    // Face haut
+    -2.0f,  2.0f, -2.0f,  1,1,1,   0,0,   0,1,0,
+     2.0f,  2.0f, -2.0f,  1,1,1,   1,0,   0,1,0,
+     2.0f,  2.0f,  2.0f,  1,1,1,   1,1,   0,1,0,
+    -2.0f,  2.0f,  2.0f,  1,1,1,   0,1,   0,1,0,
+};
+
+unsigned int roomIndices[] = {
+    0,1,2,  2,3,0,      // back
+    4,5,6,  6,7,4,      // front
+    8,9,10, 10,11,8,    // left
+    12,13,14, 14,15,12, // right
+    16,17,18, 18,19,16, // bottom
+    20,21,22, 22,23,20  // top
+};
+
 
     // Generates Shader object using shaders default.vert and default.frag
 	Shader shaderProgram("./shaders/default.vert.txt", "./shaders/default.frag.txt");
@@ -141,6 +185,23 @@ int main(){
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+
+	// Génère VAO/VBO/EBO pour la salle
+VAO roomVAO;
+roomVAO.Bind();
+VBO roomVBO(roomVertices, sizeof(roomVertices));
+EBO roomEBO(roomIndices, sizeof(roomIndices));
+roomVAO.LinkAttrib(roomVBO, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);              // position
+roomVAO.LinkAttrib(roomVBO, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float))); // couleur
+roomVAO.LinkAttrib(roomVBO, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float))); // texcoords
+roomVAO.LinkAttrib(roomVBO, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float))); // normals
+roomVAO.Unbind();
+roomVBO.Unbind();
+roomEBO.Unbind();
+
+// Texture
+Texture roomTex("./textures/texture1.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE);
+roomTex.texUnit(shaderProgram, "tex0", 0);
 
 	// Shader for light cube
 	Shader lightShader("./shaders/light.vert.txt", "./shaders/light.frag.txt");
@@ -205,6 +266,13 @@ int main(){
 		// Updates and exports the camera matrix to the Vertex Shader
 		camera.updateMatrix(FOV, nearPlane, farPlane);
 
+
+		shaderProgram.Activate();
+glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+camera.Matrix(shaderProgram, "camMatrix");
+roomTex.Bind();
+roomVAO.Bind();
+glDrawElements(GL_TRIANGLES, sizeof(roomIndices)/sizeof(unsigned int), GL_UNSIGNED_INT, 0);
 
 		// Tells OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
