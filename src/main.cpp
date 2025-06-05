@@ -169,7 +169,33 @@ int main()
     collidableObjects.push_back(wall_left.get());
     room->addObject(std::move(wall_left));
 
-    // Right Wall (+X) has been removed to make an opening for the hall
+
+    const float wallSegmentWidth = (roomSize - hallWidth) / 2.0f;
+
+    // Right Wall Segment 1 (next to the back wall)
+    auto wall_right_1 = createTexturedPlane(planeVerts, planeInd, wallTextures);
+    wall_right_1->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(roomSize / 2.0f, 0.0f, -hallWidth / 2.0f - wallSegmentWidth / 2.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(roomSize, 1.0f, wallSegmentWidth))
+    );
+    collidableObjects.push_back(wall_right_1.get());
+    room->addObject(std::move(wall_right_1));
+
+    // Right Wall Segment 2 (next to the front wall)
+    auto wall_right_2 = createTexturedPlane(planeVerts, planeInd, wallTextures);
+    wall_right_2->setLocalModelMatrix(
+        glm::translate(glm::mat4(1.0f), glm::vec3(roomSize / 2.0f, 0.0f, hallWidth / 2.0f + wallSegmentWidth / 2.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)) *
+        glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f)) *
+        glm::scale(glm::mat4(1.0f), glm::vec3(roomSize, 1.0f, wallSegmentWidth))
+    );
+    collidableObjects.push_back(wall_right_2.get());
+    room->addObject(std::move(wall_right_2));
+
 
     root->addObject(std::move(room));
 
