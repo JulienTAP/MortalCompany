@@ -17,10 +17,19 @@ string get_file_contents(const char* filename)
     throw std::runtime_error("Failed to open file: " + string(filename));
 }
 
+
 Shader::Shader(const char* vertexFile,const char* fragmentFile)
 {
     string vertexCode = get_file_contents(vertexFile);
+    if(vertexCode.empty())
+    {
+        throw std::runtime_error("Vertex shader file is empty or could not be read.");
+    }
     string fragmentCode = get_file_contents(fragmentFile);
+    if(fragmentCode.empty())
+    {
+        throw std::runtime_error("Fragment shader file is empty or could not be read.");
+    }
 
     const char* vertexSource = vertexCode.c_str();
     const char* fragmentSource = fragmentCode.c_str();
