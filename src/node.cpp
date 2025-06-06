@@ -17,18 +17,21 @@ void Node::add(Mesh *mesh)
     children_mesh_.push_back(mesh);
 }
 
-void Node::draw(Camera& camera)
+void Node::draw(Camera& camera, const glm::mat4& parentTransform)
 {
-    for(auto child : children_)
+    glm::mat4 modelMatrix = parentTransform * transform_;
+
+    for (auto* mesh : children_mesh_)
     {
-        // Apply the transformation to the child node
-        child->transform(transform_);
-        // Draw the child node
-        child->draw(camera);
+        mesh->shader.Activate();
+        glUniformMatrix4fv(glGetUniformLocation(mesh->shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(modelMatrix));
+
+        mesh->Draw(camera);
     }
-    for (auto child : children_mesh_)
+
+    for (auto* child : children_)
     {
-        child->Draw(camera);
+        child->draw(camera, modelMatrix);
     }
 }
 

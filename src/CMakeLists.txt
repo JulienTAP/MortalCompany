@@ -16,6 +16,7 @@ SET(
         ${CWD}/mesh.cpp
         ${CWD}/node.cpp
         ${CWD}/elements.cpp
+        ${CWD}/model.cpp
 )
 
 target_sources(${APP} PRIVATE ${SRC_DIR})

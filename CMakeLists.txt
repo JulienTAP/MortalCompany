@@ -23,6 +23,11 @@ set(GLEW_DIR ${EXTERNAL_DIR}/glew-cmake)
 set(GLFW_DIR ${EXTERNAL_DIR}/glfw)
 set(GLM_DIR ${EXTERNAL_DIR}/glm)
 
+set(ASSIMP_BUILD_TESTS OFF) # Don't build assimp's tests
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF) # Don't build the command-line tools
+add_subdirectory(${EXTERNAL_DIR}/assimp)
+set(LIBS ${LIBS} assimp)
+
 # Include directories
 include_directories(${INCLUDES})
 include_directories(${GLEW_DIR}/include)

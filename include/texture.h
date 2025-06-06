@@ -14,6 +14,7 @@ public:
 	GLuint unit;
 
 	Texture(const char* image, const char* texType, GLenum slot, GLenum format, GLenum pixelType);
+	Texture(const unsigned char* buffer, int len, const char* texType, GLuint slot);
 	Texture()
 	{
 		ID = 0;
