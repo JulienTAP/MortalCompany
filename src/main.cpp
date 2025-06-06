@@ -79,7 +79,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 
 
-    GLFWwindow *window = glfwCreateWindow(width, height, "TP 2",NULL,NULL);
+    GLFWwindow *window = glfwCreateWindow(width, height, "Projet Mortal Company",NULL,NULL);
     if (window == NULL) {
         std::cout << "failed creating the window" << std::endl;
         glfwTerminate();
