@@ -15,6 +15,9 @@ add_compile_definitions(SHADERS_DIR="${SHADERS_DIR}")
 # Textures directory
 set(TEXTURES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/textures/)
 add_compile_definitions(TEXTURES_DIR="${TEXTURES_DIR}")
+# Models directory
+set(MODELS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/models/)
+add_compile_definitions(MODELS_DIR="${MODELS_DIR}")
 
 # Set directories
 set(INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include)

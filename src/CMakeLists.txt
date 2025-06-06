@@ -40,3 +40,10 @@ add_custom_target(copy_textures ALL
 )
 
 add_dependencies(${APP} copy_textures)
+
+add_custom_target(copy_models ALL
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${MODELS_DIR} ${CMAKE_BINARY_DIR}/bin/models
+        COMMENT "Copying models files to runtime directory"
+)
+
+add_dependencies(${APP} copy_models)
