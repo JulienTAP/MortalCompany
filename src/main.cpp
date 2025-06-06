@@ -16,8 +16,8 @@ const float FOV = 45.0f;
 const float nearPlane = 0.1f;
 const float farPlane = 10000.0f;
 
-const unsigned int width = 800;
-const unsigned int height = 800;
+const unsigned int width = 1728;
+const unsigned int height = 972;
 
 // use left mouse button to interact with the camera
 // use z, q, d, d to move the camera
