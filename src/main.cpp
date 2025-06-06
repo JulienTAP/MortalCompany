@@ -402,7 +402,7 @@ int main() {
 
     shaderProgram.Delete();
     lightShader.Delete();
-    glfwDestroyWindow(window)
+    glfwDestroyWindow(window);
     glfwTerminate();
     return 0;
 }
