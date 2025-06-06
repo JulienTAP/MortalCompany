@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lethal Company Scavenger Model (game rip)
+* source:	https://sketchfab.com/3d-models/lethal-company-scavenger-model-game-rip-dbcd1bbe54e7485fb13d86b4b5cbaf6b
+* author:	danisspars (https://sketchfab.com/danisspars)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lethal Company Scavenger Model (game rip)" (https://sketchfab.com/3d-models/lethal-company-scavenger-model-game-rip-dbcd1bbe54e7485fb13d86b4b5cbaf6b) by danisspars (https://sketchfab.com/danisspars) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
